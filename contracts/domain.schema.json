@@ -14,25 +14,61 @@
   "properties": {
     "event_id": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "description": "全局唯一事件标识，一经分配永不复用"
     },
     "event_type": {
       "type": "string",
       "enum": [
+        "RULE_VERSION_REGISTERED",
         "RULE_ACTIVATED",
+        "ATHLETE_ELIGIBILITY_CONFIRMED",
+        "EVENT_PROGRAM_DEFINED",
+        "BOUT_SCHEDULED",
+        "POOL_COMPOSED",
+        "ROSTER_FINALIZED",
+        "JUDGE_ASSIGNED",
+        "JUDGE_REMOVED",
+        "DEVICE_REGISTERED",
+        "DEVICE_CALIBRATED",
+        "DEVICE_DECLARED_UNRELIABLE",
         "ROUND_STARTED",
-        "EVIDENCE_RECORDED",
-        "RULING_AMENDED",
-        "RESULT_CERTIFIED"
+        "RAW_SCORE_SUBMITTED",
+        "SENSOR_MESSAGE_INGESTED",
+        "FOUL_RULED",
+        "SCORE_CORRECTED",
+        "TIEBREAK_RESOLVED",
+        "RESULT_CANDIDATE_PROJECTED",
+        "RESULT_CERTIFIED",
+        "RESULT_PUBLISHED",
+        "RESULT_LOCKED",
+        "ADVANCEMENT_PROJECTED",
+        "ADVANCEMENT_FROZEN",
+        "ADVANCEMENT_UNFROZEN",
+        "ADVANCEMENT_CONFIRMED",
+        "APPEAL_FILED",
+        "APPEAL_EVIDENCE_ACCEPTED",
+        "APPEAL_REVIEW_LOGGED",
+        "APPEAL_UPHELD",
+        "APPEAL_REJECTED",
+        "APPEAL_WITHDRAWN",
+        "RECORD_CERTIFIED"
       ]
     },
     "aggregate_type": {
       "type": "string",
       "enum": [
         "competition_rule",
-        "contest_round",
+        "athlete_eligibility",
+        "bout",
+        "judge_assignment",
+        "judge",
+        "device",
         "score_evidence",
-        "appeal_case"
+        "appeal_case",
+        "result",
+        "advancement_chain",
+        "record"
       ]
     },
     "aggregate_id": {
@@ -41,16 +77,109 @@
     },
     "occurred_at": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "description": "决定实际发生的时间（设备时间或裁决时间）"
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "证据台接收时间；离线补传时晚于 occurred_at"
     },
     "version": {
       "type": "integer",
-      "minimum": 1
+      "minimum": 1,
+      "description": "聚合内严格递增版本号"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "全局追加序号，确定全库先后关系"
     },
     "summary": {
       "type": "string",
       "minLength": 1
+    },
+    "payload": {
+      "type": "object",
+      "description": "事件事实载荷，只增不改"
+    },
+    "causation_id": {
+      "type": "string",
+      "description": "触发本事件的命令或上游事件标识"
+    },
+    "correction_of": {
+      "type": "string",
+      "description": "改判/更正时引用的原始事件标识；原始记录保留不删"
+    },
+    "correlation_id": {
+      "type": "string",
+      "description": "同一场比赛/流程的关联标识"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "description": "离线补传去重键；同一键重复提交只生效一次"
+    },
+    "actor": {
+      "type": "object",
+      "required": ["id", "role"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "role": {
+          "type": "string",
+          "enum": [
+            "system",
+            "rule_committee",
+            "technical_official",
+            "head_judge",
+            "judge",
+            "device",
+            "jury",
+            "result_arbiter",
+            "chief_recorder",
+            "delegation",
+            "service"
+          ]
+        },
+        "name": { "type": "string" }
+      }
+    },
+    "prev_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "canonical JSON 的 SHA-256，链入哈希链"
+    },
+    "signature": {
+      "type": "object",
+      "description": "正式发布事件的操作者签名（由签署服务注入）",
+      "required": ["official_id", "role", "alg", "value"],
+      "properties": {
+        "official_id": { "type": "string", "minLength": 1 },
+        "role": { "type": "string", "minLength": 1 },
+        "name": { "type": "string" },
+        "alg": { "type": "string" },
+        "value": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "co_signatures": {
+      "type": "array",
+      "description": "会签签名（如纪录认证需裁判长+总记录长共同签署）",
+      "items": {
+        "type": "object",
+        "required": ["official_id", "role", "alg", "value"],
+        "properties": {
+          "official_id": { "type": "string", "minLength": 1 },
+          "role": { "type": "string" },
+          "name": { "type": "string" },
+          "alg": { "type": "string" },
+          "value": { "type": "string" }
+        }
+      }
     }
   },
-  "additionalProperties": true
+  "additionalProperties": false
 }

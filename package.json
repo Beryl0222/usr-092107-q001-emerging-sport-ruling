@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "领域事件基础校验",
+  "description": "新兴赛项（冲浪/综合格斗/虚拟跆拳道）裁判与成绩后端：事件溯源、哈希链、申诉与签署发布",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "start": "node src/main.js --demo"
   }
 }
