@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "新兴赛项裁判证据台领域事件",
+  "description": "所有决定均以仅追加事件保存。信封携带因果关系、幂等键与哈希链字段；记录一经接收，标识、发生时间与版本不得原地改写，更正必须引用原记录形成后继事件。",
   "type": "object",
   "required": [
     "event_id",
@@ -19,20 +20,67 @@
     "event_type": {
       "type": "string",
       "enum": [
-        "RULE_ACTIVATED",
+        "RULEBOOK_PUBLISHED",
+        "RULEBOOK_ACTIVATED",
+        "ATHLETE_REGISTERED",
+        "ELIGIBILITY_GRANTED",
+        "ELIGIBILITY_REVOKED",
+        "OFFICIAL_REGISTERED",
+        "CONFLICT_DECLARED",
+        "PANEL_ASSIGNED",
+        "JUDGE_REPLACED",
+        "DEVICE_REGISTERED",
+        "DEVICE_CALIBRATED",
+        "DEVICE_BOUND",
+        "SESSION_SCHEDULED",
+        "DRAW_CONDUCTED",
+        "DRAW_PUBLISHED",
+        "BOUT_SCHEDULED",
+        "BOUT_PARTICIPANT_QUALIFIED",
         "ROUND_STARTED",
+        "ROUND_ENDED",
+        "BOUT_ENDED",
         "EVIDENCE_RECORDED",
+        "EVIDENCE_QUARANTINED",
+        "PENALTY_IMPOSED",
+        "PENALTY_REVOKED",
         "RULING_AMENDED",
-        "RESULT_CERTIFIED"
+        "APPEAL_FILED",
+        "APPEAL_EVIDENCE_ADDED",
+        "REVIEW_OPENED",
+        "REVIEW_OPINION_ISSUED",
+        "APPEAL_DECIDED",
+        "APPEAL_WITHDRAWN",
+        "ADVANCEMENT_FROZEN",
+        "ADVANCEMENT_RELEASED",
+        "ADVANCEMENT_CONFIRMED",
+        "TIE_RESOLVED",
+        "RESULT_CANDIDATE_COMPUTED",
+        "RESULT_CERTIFIED",
+        "RESULT_PUBLISHED",
+        "OLYMPIC_QUOTA_ALLOCATED",
+        "RECORD_RATIFIED"
       ]
     },
     "aggregate_type": {
       "type": "string",
       "enum": [
-        "competition_rule",
-        "contest_round",
-        "score_evidence",
-        "appeal_case"
+        "rulebook",
+        "athlete",
+        "eligibility",
+        "official",
+        "panel",
+        "device",
+        "session",
+        "draw",
+        "bout",
+        "evidence",
+        "sanction",
+        "appeal_case",
+        "progression",
+        "bout_result",
+        "olympic_quota",
+        "record"
       ]
     },
     "aggregate_id": {
@@ -50,6 +98,38 @@
     "summary": {
       "type": "string",
       "minLength": 1
+    },
+    "payload": {
+      "type": "object"
+    },
+    "causation_id": {
+      "type": "string",
+      "description": "触发本事件的命令或上游事件 id"
+    },
+    "correlation_id": {
+      "type": "string",
+      "description": "同一场比赛或同一申诉链使用同一 correlation_id 串联"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "description": "离线设备补传去重键，同一键重复提交返回首条记录"
+    },
+    "content_hash": {
+      "type": "string",
+      "description": "事件正文（不含哈希与存储序号）的 SHA-256"
+    },
+    "prev_hash": {
+      "type": "string",
+      "description": "全局事件链上前一事件的 content_hash，首条为全零"
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "存储序号，仅由事件存储赋值"
+    },
+    "stored_at": {
+      "type": "string",
+      "format": "date-time"
     }
   },
   "additionalProperties": true

@@ -1,9 +1,21 @@
 {
   "event_id": "sample-001-001",
-  "event_type": "RULE_ACTIVATED",
-  "aggregate_type": "competition_rule",
-  "aggregate_id": "emerging_sport_ruling-001",
+  "event_type": "RULEBOOK_ACTIVATED",
+  "aggregate_type": "rulebook",
+  "aggregate_id": "rule-surfing-2026-1",
   "occurred_at": "2026-09-20T18:00:00+08:00",
-  "version": 1,
-  "summary": "登记新兴赛项裁判证据台的首条领域记录"
+  "version": 2,
+  "summary": "激活 2026 版冲浪竞赛规则（含奥运资格赛名次条款）",
+  "payload": {
+    "sport": "surfing",
+    "rules_version": "2026.1",
+    "evidence_window_minutes": 30,
+    "appeal_window_minutes": 15,
+    "supersedes": "rule-surfing-2026-0"
+  },
+  "correlation_id": "rules-surfing-2026",
+  "content_hash": "由事件存储在落库时计算",
+  "prev_hash": "由事件存储在落库时串接",
+  "seq": 1,
+  "stored_at": "由事件存储在落库时赋值"
 }

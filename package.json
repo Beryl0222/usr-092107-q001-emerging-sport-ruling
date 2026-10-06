@@ -1,10 +1,12 @@
 {
   "name": "emerging-sport-ruling",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "领域事件基础校验",
+  "description": "亚运会新兴赛项（冲浪/综合格斗/虚拟跆拳道）裁判与成绩后端",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "start": "node src/server.js",
+    "demo": "node scripts/demo.js"
   }
 }
